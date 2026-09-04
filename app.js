@@ -1,67 +1,7 @@
-(function(){
-"use strict";
-const BPD={14: (27.4, 29.6, 31.8), 15: (30.2, 32.6, 34.9), 16: (33.2, 35.7, 38.1), 17: (36.2, 38.8, 41.4), 18: (39.3, 42.0, 44.7), 19: (42.4, 45.2, 48.0), 20: (45.5, 48.4, 51.4), 21: (48.6, 51.7, 54.8), 22: (51.8, 55.0, 58.1), 23: (54.9, 58.2, 61.5), 24: (58.0, 61.4, 64.8), 25: (61.0, 64.5, 68.0), 26: (64.0, 67.6, 71.2), 27: (66.9, 70.6, 74.3), 28: (69.7, 73.5, 77.3), 29: (72.4, 76.3, 80.1), 30: (75.0, 78.9, 82.8), 31: (77.4, 81.4, 85.4), 32: (79.7, 83.8, 87.8), 33: (81.8, 85.9, 90.1), 34: (83.7, 87.9, 92.2), 35: (85.3, 89.7, 94.0), 36: (86.8, 91.2, 95.7), 37: (88.0, 92.5, 97.1), 38: (88.9, 93.6, 98.3), 39: (89.6, 94.4, 99.2), 40: (89.9, 94.9, 99.9)};
-const FL={14: (11.2, 13.1, 15.1), 15: (14.3, 16.3, 18.3), 16: (17.4, 19.5, 21.5), 17: (20.4, 22.5, 24.7), 18: (23.4, 25.5, 27.7), 19: (26.2, 28.5, 30.7), 20: (29.0, 31.3, 33.6), 21: (31.7, 34.1, 36.4), 22: (34.4, 36.7, 39.1), 23: (36.9, 39.4, 41.8), 24: (39.4, 41.9, 44.4), 25: (41.8, 44.4, 46.9), 26: (44.1, 46.7, 49.3), 27: (46.4, 49.0, 51.7), 28: (48.6, 51.3, 54.0), 29: (50.6, 53.4, 56.2), 30: (52.6, 55.5, 58.4), 31: (54.6, 57.5, 60.5), 32: (56.4, 59.4, 62.5), 33: (58.2, 61.3, 64.4), 34: (59.8, 63.1, 66.3), 35: (61.4, 64.8, 68.1), 36: (62.9, 66.4, 69.9), 37: (64.3, 67.9, 71.6), 38: (65.6, 69.4, 73.2), 39: (66.9, 70.8, 74.7), 40: (68.0, 72.1, 76.2)};
-
-function val(id){return parseFloat(document.getElementById(id).value);}
-function text(id,s){document.getElementById(id).textContent=s;}
-function esc(s){return String(s);}
-
-function interp(table,ga){
-  const keys=Object.keys(table).map(Number).sort((a,b)=>a-b);
-  if(ga<keys[0]||ga>keys[keys.length-1]) return null;
-  const lo=Math.floor(ga), hi=Math.ceil(ga);
-  if(table[lo] && table[hi]) {
-    if(lo===hi) return table[lo];
-    const r=ga-lo;
-    return [0,1,2].map(i=>table[lo][i]+(table[hi][i]-table[lo][i])*r);
-  }
-  return null;
-}
-
-function makeResult(id,name,measurement,limits){
-  const el=document.getElementById(id);
-  el.style.display="block";
-  if(!isFinite(measurement)) {
-    el.innerHTML='<div class="title">'+name+'</div><div class="small">Not entered</div>';
-    return;
-  }
-  const p10=limits[0], p50=limits[1], p90=limits[2];
-  let status, cls;
-  if(measurement<p10) {status="⚠ Below the 10th centile"; cls="warn";}
-  else if(measurement>p90) {status="⚠ Above the 90th centile"; cls="warn";}
-  else {status="✓ Within the 10th–90th centile range"; cls="ok";}
-  el.innerHTML='<div class="title">'+name+'</div>'+
-    '<div class="value">'+measurement.toFixed(1)+' mm</div>'+
-    '<div>10th: '+p10.toFixed(1)+' mm &nbsp; | &nbsp; 50th: '+p50.toFixed(1)+' mm &nbsp; | &nbsp; 90th: '+p90.toFixed(1)+' mm</div>'+
-    '<div class="'+cls+'" style="margin-top:7px">'+status+'</div>';
-}
-
-function calculate(){
-  text("error","");
-  document.getElementById("bpdResult").style.display="none";
-  document.getElementById("flResult").style.display="none";
-  const ga=val("ga"), b=val("bpd"), f=val("fl");
-  if(!isFinite(ga)||ga<14||ga>40) {
-    text("error","Please enter gestational age from 14 to 40 weeks.");
-    return;
-  }
-  if(!isFinite(b)&&!isFinite(f)) {
-    text("error","Please enter BPD and/or FL.");
-    return;
-  }
-  const bl=interp(BPD,ga), fl=interp(FL,ga);
-  if(isFinite(b)) makeResult("bpdResult","BPD",b,bl);
-  if(isFinite(f)) makeResult("flResult","FL",f,fl);
-}
-
-function clearAll(){
-  ["ga","bpd","fl"].forEach(id=>document.getElementById(id).value="");
-  ["bpdResult","flResult"].forEach(id=>{document.getElementById(id).style.display="none";});
-  text("error","");
-}
-document.addEventListener("DOMContentLoaded",function(){
-  document.getElementById("calc").addEventListener("click",calculate,false);
-  document.getElementById("clear").addEventListener("click",clearAll,false);
-});
-})();
+const W=[14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40],B=[[24.4, 26.1, 27.9, 29.6, 31.4, 33.1, 34.8], [27.1, 28.9, 30.8, 32.6, 34.4, 36.3, 38.1], [29.9, 31.8, 33.7, 35.6, 37.6, 39.5, 41.4], [32.7, 34.7, 36.8, 38.8, 40.8, 42.8, 44.8], [35.6, 37.7, 39.9, 42, 44.1, 46.2, 48.3], [38.6, 40.8, 43, 45.2, 47.4, 49.6, 51.8], [41.5, 43.8, 46.1, 48.4, 50.7, 53, 55.3], [44.5, 46.9, 49.3, 51.7, 54.1, 56.5, 58.9], [47.5, 50, 52.5, 55, 57.4, 59.9, 62.4], [50.5, 53.1, 55.6, 58.2, 60.8, 63.3, 65.9], [53.4, 56.1, 58.7, 61.4, 64, 66.7, 69.3], [56.3, 59.1, 61.8, 64.5, 67.3, 70, 72.7], [59.2, 62, 64.8, 67.6, 70.4, 73.2, 76], [62, 64.8, 67.7, 70.6, 73.5, 76.3, 79.2], [64.6, 67.6, 70.5, 73.5, 76.4, 79.4, 82.3], [67.2, 70.2, 73.2, 76.3, 79.3, 82.3, 85.3], [69.7, 72.8, 75.8, 78.9, 82, 85.1, 88.1], [72, 75.1, 78.3, 81.4, 84.5, 87.7, 90.8], [74.2, 77.4, 80.6, 83.8, 86.9, 90.1, 93.3], [76.2, 79.4, 82.7, 85.9, 89.2, 92.4, 95.7], [77.9, 81.3, 84.6, 87.9, 91.2, 94.5, 97.9], [79.5, 82.9, 86.3, 89.7, 93.1, 96.4, 99.8], [80.8, 84.3, 87.8, 91.2, 94.7, 98.1, 101.6], [81.9, 85.4, 89, 92.5, 96.1, 99.6, 103.2], [82.6, 86.3, 89.9, 93.6, 97.2, 100.9, 104.6], [83.1, 86.8, 90.6, 94.4, 98.2, 101.9, 105.7], [83.1, 87.1, 91, 94.9, 98.8, 102.7, 106.7]],F=[[8.6, 10.1, 11.6, 13.1, 14.6, 16.1, 17.7], [11.6, 13.2, 14.8, 16.3, 17.9, 19.5, 21], [14.6, 16.2, 17.9, 19.5, 21.1, 22.7, 24.3], [17.6, 19.2, 20.9, 22.5, 24.2, 25.9, 27.5], [20.4, 22.1, 23.8, 25.5, 27.2, 28.9, 30.6], [23.2, 25, 26.7, 28.5, 30.2, 31.9, 33.7], [26, 27.7, 29.5, 31.3, 33.1, 34.8, 36.6], [28.6, 30.4, 32.2, 34.1, 35.9, 37.7, 39.5], [31.2, 33, 34.9, 36.7, 38.6, 40.5, 42.3], [33.7, 35.6, 37.5, 39.4, 41.3, 43.1, 45], [36.1, 38, 40, 41.9, 43.8, 45.8, 47.7], [38.4, 40.4, 42.4, 44.4, 46.3, 48.3, 50.3], [40.7, 42.7, 44.7, 46.7, 48.8, 50.8, 52.8], [42.8, 44.9, 47, 49.1, 51.1, 53.2, 55.3], [44.9, 47, 49.2, 51.3, 53.4, 55.5, 57.7], [46.9, 49.1, 51.3, 53.4, 55.6, 57.8, 60], [48.8, 51, 53.3, 55.5, 57.8, 60, 62.2], [50.6, 52.9, 55.2, 57.5, 59.8, 62.1, 64.4], [52.3, 54.7, 57.1, 59.5, 61.8, 64.2, 66.6], [53.9, 56.4, 58.9, 61.3, 63.8, 66.2, 68.7], [55.5, 58, 60.5, 63.1, 65.6, 68.1, 70.7], [56.9, 59.5, 62.2, 64.8, 67.4, 70, 72.7], [58.2, 61, 63.7, 66.4, 69.1, 71.8, 74.6], [59.5, 62.3, 65.1, 68, 70.8, 73.6, 76.4], [60.6, 63.5, 66.5, 69.4, 72.4, 75.3, 78.3], [61.6, 64.7, 67.7, 70.8, 73.9, 77, 80], [62.5, 65.7, 68.9, 72.1, 75.4, 78.6, 81.8]],Z=[-3,-2,-1,0,1,2,3];
+function erf(x){let s=x<0?-1:1;x=Math.abs(x);let a=0.254829592,b=-0.284496736,c=1.421413741,d=-1.453152027,e=1.061405429,p=.3275911,t=1/(1+p*x);return s*(1-((((e*t+d)*t+c)*t+b)*t+a)*t*Math.exp(-x*x))}
+function cdf(z){return .5*(1+erf(z/Math.sqrt(2)))}
+function ref(A,g){let lo=Math.floor(g),hi=Math.ceil(g),i=lo-14,j=hi-14,r=g-lo;if(lo===hi)return A[i];return A[i].map((x,k)=>x+(A[j][k]-x)*r)}
+function one(name,x,r){let z;if(x<=r[0])z=-3;else if(x>=r[6])z=3;else{for(let i=0;i<6;i++)if(x>=r[i]&&x<=r[i+1]){z=Z[i]+(x-r[i])/(r[i+1]-r[i]);break}}let p=cdf(z)*100,p10=r[2],p50=r[3],p90=r[4],s=x<p10?'⚠ Below the 10th centile':x>p90?'⚠ Above the 90th centile':'✓ Within the 10th–90th centile range',cl=(x<p10||x>p90)?'warn':'ok';return '<div style="padding:10px 0;border-bottom:1px solid #ccc"><b>'+name+'</b><div style="font-size:25px;font-weight:bold">'+x.toFixed(1)+' mm</div><div><b>Estimated centile: '+p.toFixed(1)+'th</b></div><div class="'+cl+'" style="margin-top:6px">'+s+'</div><div class="small">10th: '+p10.toFixed(1)+' mm | 50th: '+p50.toFixed(1)+' mm | 90th: '+p90.toFixed(1)+' mm</div></div>'}
+document.getElementById('check').onclick=()=>{let g=parseFloat(ga.value),b=parseFloat(bpd.value),f=parseFloat(fl.value),o=document.getElementById('out');if(!isFinite(g)||g<14||g>40){o.innerHTML='<span class="warn">Please enter gestational age from 14 to 40 weeks.</span>';return}if(!isFinite(b)&&!isFinite(f)){o.innerHTML='<span class="warn">Please enter BPD and/or FL.</span>';return}let s='';if(isFinite(b))s+=one('BPD',b,ref(B,g));if(isFinite(f))s+=one('FL',f,ref(F,g));o.innerHTML=s};
+document.getElementById('clear').onclick=()=>{ga.value='';bpd.value='';fl.value='';out.innerHTML=''};
