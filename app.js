@@ -2,6 +2,37 @@ const W=[14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
 function erf(x){let s=x<0?-1:1;x=Math.abs(x);let a=0.254829592,b=-0.284496736,c=1.421413741,d=-1.453152027,e=1.061405429,p=.3275911,t=1/(1+p*x);return s*(1-((((e*t+d)*t+c)*t+b)*t+a)*t*Math.exp(-x*x))}
 function cdf(z){return .5*(1+erf(z/Math.sqrt(2)))}
 function ref(A,g){let lo=Math.floor(g),hi=Math.ceil(g),i=lo-14,j=hi-14,r=g-lo;if(lo===hi)return A[i];return A[i].map((x,k)=>x+(A[j][k]-x)*r)}
-function one(name,x,r){let z;if(x<=r[0])z=-3;else if(x>=r[6])z=3;else{for(let i=0;i<6;i++)if(x>=r[i]&&x<=r[i+1]){z=Z[i]+(x-r[i])/(r[i+1]-r[i])*(Z[i+1]-Z[i]);break}}let p=cdf(z)*100,p10=r[2],p50=r[3],p90=r[4],s=x<p10?'⚠ Below the 10th centile':x>p90?'⚠ Above the 90th centile':'✓ Within the 10th–90th centile range',cl=(x<p10||x>p90)?'warn':'ok';return '<div style="padding:10px 0;border-bottom:1px solid #ccc"><b>'+name+'</b><div style="font-size:25px;font-weight:bold">'+x.toFixed(1)+' mm</div><div><b>Estimated centile: '+p.toFixed(1)+'th</b></div><div class="'+cl+'" style="margin-top:6px">'+s+'</div><div class="small">10th: '+p10.toFixed(1)+' mm | 50th: '+p50.toFixed(1)+' mm | 90th: '+p90.toFixed(1)+' mm</div></div>'}
-document.getElementById('check').onclick=()=>{let g=parseFloat(ga.value),b=parseFloat(bpd.value),f=parseFloat(fl.value),o=document.getElementById('out');if(!isFinite(g)||g<14||g>40){o.innerHTML='<span class="warn">Please enter gestational age from 14 to 40 weeks.</span>';return}if(!isFinite(b)&&!isFinite(f)){o.innerHTML='<span class="warn">Please enter BPD and/or FL.</span>';return}let s='';if(isFinite(b))s+=one('BPD',b,ref(B,g));if(isFinite(f))s+=one('FL',f,ref(F,g));o.innerHTML=s};
+function sizeEquivalentGA(A,x){
+  const med=W.map((_,i)=>A[i][3]);
+  if(x<=med[0]) return W[0];
+  if(x>=med[med.length-1]) return W[W.length-1];
+  for(let i=0;i<med.length-1;i++){
+    if(x>=med[i]&&x<=med[i+1]){
+      return W[i]+(x-med[i])/(med[i+1]-med[i])*(W[i+1]-W[i]);
+    }
+  }
+  return null;
+}
+function one(name,x,r,A){
+  let z;
+  if(x<=r[0])z=-3;
+  else if(x>=r[6])z=3;
+  else{
+    for(let i=0;i<6;i++)if(x>=r[i]&&x<=r[i+1]){
+      z=Z[i]+(x-r[i])/(r[i+1]-r[i])*(Z[i+1]-Z[i]);break;
+    }
+  }
+  let p=cdf(z)*100,p10=r[2],p50=r[3],p90=r[4];
+  let s=x<p10?'⚠ Below the 10th centile':x>p90?'⚠ Above the 90th centile':'✓ Within the 10th–90th centile range';
+  let cl=(x<p10||x>p90)?'warn':'ok';
+  let ega=sizeEquivalentGA(A,x);
+  let egaText=ega===W[0] && x<A[0][3]
+    ? '< '+W[0]+' weeks (below reference median range)'
+    : ega===W[W.length-1] && x>A[A.length-1][3]
+    ? '> '+W[W.length-1]+' weeks (above reference median range)'
+    : '≈ '+ega.toFixed(1)+' weeks'
+;
+  return '<div style="padding:10px 0;border-bottom:1px solid #ccc"><b>'+name+'</b><div style="font-size:25px;font-weight:bold">'+x.toFixed(1)+' mm</div><div><b>Estimated centile: '+p.toFixed(1)+'th</b></div><div class="'+cl+'" style="margin-top:6px">'+s+'</div><div style="margin-top:8px"><b>Size-equivalent GA:</b> '+egaText+'</div><div class="small">10th: '+p10.toFixed(1)+' mm | 50th: '+p50.toFixed(1)+' mm | 90th: '+p90.toFixed(1)+' mm</div></div>';
+}
+document.getElementById('check').onclick=()=>{let g=parseFloat(ga.value),b=parseFloat(bpd.value),f=parseFloat(fl.value),o=document.getElementById('out');if(!isFinite(g)||g<14||g>40){o.innerHTML='<span class="warn">Please enter gestational age from 14 to 40 weeks.</span>';return}if(!isFinite(b)&&!isFinite(f)){o.innerHTML='<span class="warn">Please enter BPD and/or FL.</span>';return}let s='';if(isFinite(b)){if(b<10||b>120){o.innerHTML='<span class="warn">Please enter a valid BPD (mm).</span>';return}s+=one('BPD',b,ref(B,g),B)}if(isFinite(f)){if(f<5||f>90){o.innerHTML='<span class="warn">Please enter a valid FL (mm).</span>';return}s+=one('FL',f,ref(F,g),F)}o.innerHTML=s};
 document.getElementById('clear').onclick=()=>{ga.value='';bpd.value='';fl.value='';out.innerHTML=''};
