@@ -1,1 +1,9 @@
-{"name":"BPD & FL Normal Range Checker","short_name":"BPD FL Checker","start_url":"./index.html","scope":"./","display":"standalone","background_color":"#ffffff","theme_color":"#ffffff"}
+{
+  "name": "BPD & FL Fetal Growth Assessment",
+  "short_name": "BPD & FL Assessment",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff"
+}

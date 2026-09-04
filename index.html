@@ -1,13 +1,13 @@
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#ffffff"><link rel="manifest" href="./manifest.json"><title>BPD & FL Checker</title><style>
 body{font-family:Arial,sans-serif;background:#f4f4f4;padding:14px;margin:0}.card{max-width:540px;margin:auto;background:white;padding:20px;border-radius:14px;box-sizing:border-box}h1{text-align:center;font-size:22px;margin-top:4px}.small{font-size:12px;color:#555;line-height:1.5}.intro{text-align:center;margin-bottom:8px}label{display:block;font-weight:bold;margin-top:14px}input,button{width:100%;box-sizing:border-box;font-size:19px;padding:12px;margin-top:5px;border-radius:8px}button{margin-top:16px;font-weight:bold}.result{margin-top:18px;padding:15px;background:#eee;border-radius:10px}.warn{color:#a00000;font-weight:bold}.ok{font-weight:bold}.note{margin-top:12px;padding:10px;border-radius:8px;background:#fafafa}.footer{text-align:center;border-top:1px solid #bbb;margin-top:25px;padding-top:12px;font-size:12px;color:#555}
 </style></head><body><div class="card">
-<h1>BPD & FL Normal Range Checker</h1><div class="small intro">INTERGROWTH-21st International Fetal Growth Standards</div>
+<h1>BPD & FL Fetal Growth Assessment</h1><div class="small intro">INTERGROWTH-21st International Fetal Growth Standards</div>
 <label>Gestational age (weeks)</label><input id="ga" type="number" min="14" max="40" step="0.1" inputmode="decimal" placeholder="e.g. 32.0">
 <label>BPD (mm)</label><input id="bpd" type="number" min="10" max="120" step="0.1" inputmode="decimal" placeholder="e.g. 80.0">
 <label>FL (mm)</label><input id="fl" type="number" min="5" max="90" step="0.1" inputmode="decimal" placeholder="e.g. 58.0">
 <button id="check">CHECK</button><button id="clear">CLEAR</button>
 <div id="out" class="result"></div>
 <div class="small note"><b>How to read “Size-equivalent GA”</b><br>This is the gestational age at which the measured BPD or FL is closest to the INTERGROWTH-21st 50th-centile size. It describes fetal size, <b>not the true gestational age</b>, and should not be used to change an established gestational age or EDD.</div>
-<div class="small note">Estimated centile is derived from the published INTERGROWTH-21st z-score reference values. The 10th–90th centile range is used for screening/triage. This tool is not a diagnostic tool.</div>
+<div class="small note">BPD/FL centile is derived from the published INTERGROWTH-21st z-score reference values. The 10th–90th centile range is used for screening/triage. This tool is not a diagnostic tool.</div>
 <div class="footer">Developed by JICA Project for Pacific Co-learning Towards Resilient Health System</div>
 </div><script src="./app.js"></script></body></html>
